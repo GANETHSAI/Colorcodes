@@ -1,0 +1,59 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLineEdit
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+
+class WebBrowser(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Python Web Browser")
+        self.setGeometry(100, 100, 1000, 600)
+
+        # Web Engine View
+        self.browser = QWebEngineView()
+        self.browser.setUrl("https://www.google.com")  # Default home page
+
+        # URL Bar
+        self.url_bar = QLineEdit()
+        self.url_bar.setPlaceholderText("Enter URL and press Enter")
+        self.url_bar.returnPressed.connect(self.load_url)
+
+        # Buttons
+        self.back_button = QPushButton("Back")
+        self.back_button.clicked.connect(self.browser.back)
+
+        self.forward_button = QPushButton("Forward")
+        self.forward_button.clicked.connect(self.browser.forward)
+
+        self.refresh_button = QPushButton("Refresh")
+        self.refresh_button.clicked.connect(self.browser.reload)
+
+        # Layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.url_bar)
+        layout.addWidget(self.browser)
+
+        button_layout = QVBoxLayout()
+        button_layout.addWidget(self.back_button)
+        button_layout.addWidget(self.forward_button)
+        button_layout.addWidget(self.refresh_button)
+
+        layout.addLayout(button_layout)
+
+        container = QWidget()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
+
+    def load_url(self):
+        url = self.url_bar.text()
+        if not url.startswith("http"):
+            url = "http://" + url
+        self.browser.setUrl(url)
+
+
+# Run Application
+app = QApplication(sys.argv)
+window = WebBrowser()
+window.show()
+sys.exit(app.exec_())
